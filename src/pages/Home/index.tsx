@@ -1,11 +1,37 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Play } from "phosphor-react";
+import { useForm } from "react-hook-form";
+import * as zod from "zod";
 
 import * as S from "./styles";
 
+const newTaskSchema = zod.object({
+    task: zod.string().min(1, "Informe a tarefa"),
+    minutesAmount: zod
+        .number()
+        .min(5, "A tarefa precisa durar no mínimo 5 minutos.")
+        .max(60, "A tarefa precisa durar no máximo 60 minutos."),
+});
+
+type newTaskProps = zod.infer<typeof newTaskSchema>;
+
 export function Home() {
+    const { handleSubmit, register, watch } = useForm<newTaskProps>({
+        resolver: zodResolver(newTaskSchema),
+        defaultValues: {
+            task: "",
+            minutesAmount: 0,
+        },
+    });
+
+    const task = watch("task");
+    const isSubmitDisabled = !task;
+
+    function handleCreateTask() {}
+
     return (
         <S.HomeContainer>
-            <form>
+            <form onSubmit={handleSubmit(handleCreateTask)}>
                 <S.FormContainer>
                     <label htmlFor="task">Vou trabalhar em</label>
                     <S.TaskInput
@@ -13,6 +39,7 @@ export function Home() {
                         type="text"
                         placeholder="Dê um nome para o seu projeto"
                         list="taskSuggestions"
+                        {...register("task")}
                     />
 
                     <datalist id="taskSuggestions">
@@ -29,6 +56,7 @@ export function Home() {
                         step={5}
                         min={0}
                         max={60}
+                        {...register("minutesAmount", { valueAsNumber: true })}
                     />
 
                     <span>minutos.</span>
@@ -42,7 +70,7 @@ export function Home() {
                     <span>0</span>
                 </S.CountDownContainer>
 
-                <S.StartCountDownButton>
+                <S.StartCountDownButton disabled={isSubmitDisabled}>
                     <Play size={24} />
                     Começar
                 </S.StartCountDownButton>
