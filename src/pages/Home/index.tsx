@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Play } from "phosphor-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as zod from "zod";
 
@@ -15,8 +16,18 @@ const newTaskSchema = zod.object({
 
 type newTaskProps = zod.infer<typeof newTaskSchema>;
 
+interface Task {
+    id: string;
+    task: string;
+    minutesAmount: number;
+}
+
 export function Home() {
-    const { handleSubmit, register, watch } = useForm<newTaskProps>({
+    const [tasks, setTasks] = useState<Task[]>([]);
+    const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
+    const [amountSecondsPast, setAmountSecondsPast] = useState<number>(0);
+
+    const { handleSubmit, register, watch, reset } = useForm<newTaskProps>({
         resolver: zodResolver(newTaskSchema),
         defaultValues: {
             task: "",
@@ -24,10 +35,32 @@ export function Home() {
         },
     });
 
-    const task = watch("task");
-    const isSubmitDisabled = !task;
+    function handleCreateTask(data: newTaskProps) {
+        const newTask: Task = {
+            id: String(new Date().getTime()),
+            task: data.task,
+            minutesAmount: data.minutesAmount,
+        };
 
-    function handleCreateTask() {}
+        setTasks((prev) => [...prev, newTask]);
+        setActiveTaskId(newTask.id);
+
+        reset();
+    }
+
+    const activeTask = tasks.find((task) => task.id === activeTaskId);
+
+    const totalSeconds = activeTask ? activeTask.minutesAmount * 60 : 0;
+    const currentSeconds = activeTask ? totalSeconds - amountSecondsPast : 0;
+
+    const minutesAmount = Math.floor(currentSeconds / 60);
+    const secondsAmount = currentSeconds % 60;
+
+    const minutesLeft = String(minutesAmount).padStart(2, "0");
+    const secondsLeft = String(secondsAmount).padStart(2, "0");
+
+    const taskInputValue = watch("task");
+    const isSubmitDisabled = !taskInputValue;
 
     return (
         <S.HomeContainer>
@@ -63,11 +96,11 @@ export function Home() {
                 </S.FormContainer>
 
                 <S.CountDownContainer>
-                    <span>0</span>
-                    <span>0</span>
+                    <span>{minutesLeft[0]}</span>
+                    <span>{minutesLeft[1]}</span>
                     <S.CountDownSeparator>:</S.CountDownSeparator>
-                    <span>0</span>
-                    <span>0</span>
+                    <span>{secondsLeft[0]}</span>
+                    <span>{secondsLeft[1]}</span>
                 </S.CountDownContainer>
 
                 <S.StartCountDownButton disabled={isSubmitDisabled}>
