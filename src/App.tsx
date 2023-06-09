@@ -1,6 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 
+import { TaskContextProvider } from "./contexts/TaskContext";
 import { Router } from "./Router";
 
 import { GlobalStyle } from "./styles/global";
@@ -10,7 +11,9 @@ export function App() {
     return (
         <ThemeProvider theme={defaultTheme}>
             <BrowserRouter>
-                <Router />
+                <TaskContextProvider>
+                    <Router />
+                </TaskContextProvider>
             </BrowserRouter>
 
             <GlobalStyle />

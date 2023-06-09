@@ -1,6 +1,13 @@
+import { formatDistanceToNow } from "date-fns";
+import ptBr from "date-fns/locale/pt-BR";
+import { useContext } from "react";
+import { TaskContext } from "../../contexts/TaskContext";
+
 import { HistoryContainer, HistoryList, Status } from "./styles";
 
 export function History() {
+    const { tasks } = useContext(TaskContext);
+
     return (
         <HistoryContainer>
             <h1>Meu histórico</h1>
@@ -17,310 +24,29 @@ export function History() {
                     </thead>
 
                     <tbody>
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há cerca de 2 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Concluído</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefas</td>
-                            <td>30 minutos</td>
-                            <td>Há cerca de 5 meses</td>
-                            <td>
-                                <Status statusColor="red">Em andamento</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há cerca de 2 meses</td>
-                            <td>
-                                <Status statusColor="green">Concluído</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefas</td>
-                            <td>30 minutos</td>
-                            <td>Há cerca de 5 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Em andamento</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há cerca de 2 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Concluído</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefas</td>
-                            <td>30 minutos</td>
-                            <td>Há cerca de 5 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Em andamento</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há cerca de 2 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Concluído</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefas</td>
-                            <td>30 minutos</td>
-                            <td>Há cerca de 5 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Em andamento</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há cerca de 2 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Concluído</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefas</td>
-                            <td>30 minutos</td>
-                            <td>Há cerca de 5 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Em andamento</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há cerca de 2 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Concluído</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefas</td>
-                            <td>30 minutos</td>
-                            <td>Há cerca de 5 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Em andamento</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há cerca de 2 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Concluído</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefas</td>
-                            <td>30 minutos</td>
-                            <td>Há cerca de 5 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Em andamento</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há cerca de 2 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Concluído</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefas</td>
-                            <td>30 minutos</td>
-                            <td>Há cerca de 5 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Em andamento</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há cerca de 2 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Concluído</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefas</td>
-                            <td>30 minutos</td>
-                            <td>Há cerca de 5 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Em andamento</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há cerca de 2 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Concluído</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefas</td>
-                            <td>30 minutos</td>
-                            <td>Há cerca de 5 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Em andamento</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há cerca de 2 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Concluído</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefas</td>
-                            <td>30 minutos</td>
-                            <td>Há cerca de 5 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Em andamento</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há cerca de 2 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Concluído</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefas</td>
-                            <td>30 minutos</td>
-                            <td>Há cerca de 5 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Em andamento</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há cerca de 2 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Concluído</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefas</td>
-                            <td>30 minutos</td>
-                            <td>Há cerca de 5 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Em andamento</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há cerca de 2 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Concluído</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefas</td>
-                            <td>30 minutos</td>
-                            <td>Há cerca de 5 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Em andamento</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há cerca de 2 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Concluído</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefas</td>
-                            <td>30 minutos</td>
-                            <td>Há cerca de 5 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Em andamento</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há cerca de 2 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Concluído</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefas</td>
-                            <td>30 minutos</td>
-                            <td>Há cerca de 5 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Em andamento</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há cerca de 2 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Concluído</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefas</td>
-                            <td>30 minutos</td>
-                            <td>Há cerca de 5 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Em andamento</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há cerca de 2 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Concluído</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefas</td>
-                            <td>30 minutos</td>
-                            <td>Há cerca de 5 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Em andamento</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há cerca de 2 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Concluído</Status>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tarefas</td>
-                            <td>30 minutos</td>
-                            <td>Há cerca de 5 meses</td>
-                            <td>
-                                <Status statusColor="yellow">Em andamento</Status>
-                            </td>
-                        </tr>
+                        {tasks.map((task) => (
+                            <tr key={task.id}>
+                                <td>{task.task}</td>
+                                <td>{task.minutesAmount} minutos</td>
+                                <td>
+                                    {formatDistanceToNow(task.startDate, {
+                                        addSuffix: true,
+                                        locale: ptBr,
+                                    })}
+                                </td>
+                                <td>
+                                    {task.finishedDate && (
+                                        <Status statusColor="green">Concluído</Status>
+                                    )}
+                                    {task.interruptedDate && (
+                                        <Status statusColor="red">Interrompido</Status>
+                                    )}
+                                    {!task.interruptedDate && !task.finishedDate && (
+                                        <Status statusColor="yellow">Em andamento</Status>
+                                    )}
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </HistoryList>
