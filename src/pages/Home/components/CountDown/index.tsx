@@ -6,13 +6,8 @@ import { TaskContext } from "../../../../contexts/TaskContext";
 import * as S from "./styles";
 
 export function CountDown() {
-    const {
-        activeTask,
-        activeTaskId,
-        amountSecondsPast,
-        markCurrentTaskAsFinished,
-        updateSecondsPast,
-    } = useContext(TaskContext);
+    const { activeTask, amountSecondsPast, markCurrentTaskAsFinished, updateSecondsPast } =
+        useContext(TaskContext);
 
     const totalSeconds = activeTask ? activeTask.minutesAmount * 60 : 0;
     const currentSeconds = activeTask ? totalSeconds - amountSecondsPast : 0;
@@ -42,13 +37,18 @@ export function CountDown() {
                     markCurrentTaskAsFinished();
 
                     updateSecondsPast(totalSeconds);
+
                     clearInterval(interval);
                 } else {
                     updateSecondsPast(secondsDifference);
                 }
             }, 1000);
         }
-    }, [activeTask, activeTaskId, totalSeconds, markCurrentTaskAsFinished, updateSecondsPast]);
+
+        return () => {
+            clearInterval(interval);
+        };
+    }, [activeTask, totalSeconds, markCurrentTaskAsFinished, updateSecondsPast]);
 
     return (
         <S.CountDownContainer>
