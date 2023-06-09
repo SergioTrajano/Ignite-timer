@@ -1,22 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { HandPalm, Play } from "phosphor-react";
-import { createContext, useState } from "react";
+import { useContext } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import * as zod from "zod";
+
+import { TaskContext } from "../../contexts/TaskContext";
 
 import { CountDown } from "./components/CountDown";
 import { NewTask } from "./components/NewTask";
 
 import * as S from "./styles";
-
-interface Task {
-    id: string;
-    task: string;
-    minutesAmount: number;
-    startDate: Date;
-    interruptedDate?: Date;
-    finishedDate?: Date;
-}
 
 const newTaskSchema = zod.object({
     task: zod.string().min(1, "Informe a tarefa"),
@@ -28,21 +21,8 @@ const newTaskSchema = zod.object({
 
 type newTaskProps = zod.infer<typeof newTaskSchema>;
 
-interface TaskContextProps {
-    activeTask: Task | undefined;
-    activeTaskId: string | null;
-    amountSecondsPast: number;
-
-    markCurrentTaskAsFinished: () => void;
-    updateSecondsPast: (newValue: number) => void;
-}
-
-export const TaskContext = createContext<TaskContextProps>({} as TaskContextProps);
-
 export function Home() {
-    const [tasks, setTasks] = useState<Task[]>([]);
-    const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
-    const [amountSecondsPast, setAmountSecondsPast] = useState<number>(0);
+    const { activeTask, interruptTask, createNewTask } = useContext(TaskContext);
 
     const newCycleForm = useForm<newTaskProps>({
         resolver: zodResolver(newTaskSchema),
@@ -54,27 +34,19 @@ export function Home() {
 
     const { handleSubmit, watch, reset } = newCycleForm;
 
-    const activeTask = tasks.find((task) => task.id === activeTaskId);
+    function handleInterruptTask() {
+        interruptTask();
+    }
+
+    function handleCreateTask(data: newTaskProps) {
+        createNewTask(data);
+
+        reset();
+    }
 
     const taskInputValue = watch("task");
     const minutesAmountInputValue = watch("minutesAmount");
     const isSubmitDisabled = !taskInputValue || !minutesAmountInputValue;
-
-    function markCurrentTaskAsFinished() {
-        setTasks((prev) =>
-            prev.map((task) => {
-                if (task.id === activeTaskId) {
-                    return { ...task, finishedDate: new Date() };
-                }
-
-                return task;
-            })
-        );
-    }
-
-    function updateSecondsPast(newValue: number) {
-        setAmountSecondsPast(newValue);
-    }
 
     function renderButtonBasedIfActiveTask() {
         if (activeTask) {
@@ -100,53 +72,14 @@ export function Home() {
         );
     }
 
-    function handleInterruptTask() {
-        setTasks((prev) =>
-            prev.map((task) => {
-                if (activeTask?.id === activeTaskId) {
-                    return { ...task, interruptedDate: new Date() };
-                }
-
-                return task;
-            })
-        );
-
-        setActiveTaskId(null);
-    }
-
-    function handleCreateTask(data: newTaskProps) {
-        const newTask: Task = {
-            id: String(new Date().getTime()),
-            task: data.task,
-            minutesAmount: data.minutesAmount,
-            startDate: new Date(),
-        };
-
-        setTasks((prev) => [...prev, newTask]);
-        setActiveTaskId(newTask.id);
-        setAmountSecondsPast(0);
-
-        reset();
-    }
-
     return (
         <S.HomeContainer>
             <form onSubmit={handleSubmit(handleCreateTask)}>
-                <TaskContext.Provider
-                    value={{
-                        activeTask,
-                        activeTaskId,
-                        amountSecondsPast,
-                        updateSecondsPast,
-                        markCurrentTaskAsFinished,
-                    }}
-                >
-                    <FormProvider {...newCycleForm}>
-                        <NewTask />
-                    </FormProvider>
+                <FormProvider {...newCycleForm}>
+                    <NewTask />
+                </FormProvider>
 
-                    <CountDown />
-                </TaskContext.Provider>
+                <CountDown />
 
                 {renderButtonBasedIfActiveTask()}
             </form>

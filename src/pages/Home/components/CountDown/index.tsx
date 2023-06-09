@@ -1,7 +1,7 @@
 import { differenceInSeconds } from "date-fns";
 import { useContext, useEffect } from "react";
 
-import { TaskContext } from "../..";
+import { TaskContext } from "../../../../contexts/TaskContext";
 
 import * as S from "./styles";
 
