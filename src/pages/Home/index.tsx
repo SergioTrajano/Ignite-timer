@@ -32,12 +32,10 @@ export function Home() {
         },
     });
 
-    const { handleSubmit, reset } = newCycleForm;
+    const { handleSubmit } = newCycleForm;
 
     function handleCreateTask(data: newTaskProps) {
         createNewTask(data);
-
-        reset();
     }
 
     return (
