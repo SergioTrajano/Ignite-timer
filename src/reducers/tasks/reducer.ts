@@ -1,3 +1,5 @@
+import { produce } from "immer";
+
 import { ActionTypes } from "./actions";
 
 export interface Task {
@@ -16,37 +18,42 @@ interface TasksState {
 
 export function taskReducer(state: TasksState, action: any) {
     switch (action.type) {
-        case ActionTypes.ADD_NEW_TASK:
-            return {
-                ...state,
-                tasks: [...state.tasks, action.newTask],
-                activeTaskId: action.newTask.id,
-            };
-        case ActionTypes.INTERRUPT_TASK:
-            return {
-                ...state,
-                tasks: state.tasks.map((task) => {
-                    if (task.id === state.activeTaskId) {
-                        return { ...task, interruptedDate: new Date() };
-                    }
+        case ActionTypes.ADD_NEW_TASK: {
+            return produce(state, (draft) => {
+                draft.tasks.push(action.newTask);
+                draft.activeTaskId = action.newTask.id;
+            });
+        }
+        case ActionTypes.INTERRUPT_TASK: {
+            const currentTaskIndex = state.tasks.findIndex(
+                (task) => task.id === state.activeTaskId
+            );
 
-                    return task;
-                }),
-                activeTaskId: undefined,
-            };
-        case ActionTypes.MARK_CURRENT_TASK_AS_FINISHED:
-            return {
-                ...state,
-                tasks: state.tasks.map((task) => {
-                    if (task.id === state.activeTaskId) {
-                        return { ...task, finishedDate: new Date() };
-                    }
+            if (currentTaskIndex < 0) {
+                return state;
+            }
 
-                    return task;
-                }),
-                activeTaskId: undefined,
-            };
-        default:
+            return produce(state, (draft) => {
+                draft.tasks[currentTaskIndex].interruptedDate = new Date();
+                draft.activeTaskId = undefined;
+            });
+        }
+        case ActionTypes.MARK_CURRENT_TASK_AS_FINISHED: {
+            const currentTaskIndex = state.tasks.findIndex(
+                (task) => task.id === state.activeTaskId
+            );
+
+            if (currentTaskIndex < 0) {
+                return state;
+            }
+
+            return produce(state, (draft) => {
+                draft.tasks[currentTaskIndex].finishedDate = new Date();
+                draft.activeTaskId = undefined;
+            });
+        }
+        default: {
             return state;
+        }
     }
 }
