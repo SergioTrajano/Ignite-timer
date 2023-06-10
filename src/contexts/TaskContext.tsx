@@ -20,7 +20,7 @@ interface NewTaskProps {
 interface TaskContextProps {
     tasks: Task[];
     activeTask: Task | undefined;
-    activeTaskId: string | null;
+    activeTaskId: string | undefined;
     amountSecondsPast: number;
 
     markCurrentTaskAsFinished: () => void;
