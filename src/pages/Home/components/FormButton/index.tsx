@@ -7,10 +7,12 @@ import * as S from "./styles";
 
 export function FormButton() {
     const { activeTask, interruptTask } = useContext(TaskContext);
-    const { watch } = useFormContext();
+    const { reset, watch } = useFormContext();
 
     function handleInterruptTask() {
         interruptTask();
+
+        reset();
     }
 
     const taskInputValue = watch("task");

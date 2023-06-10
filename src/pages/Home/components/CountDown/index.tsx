@@ -1,6 +1,7 @@
 import { differenceInSeconds } from "date-fns";
 import { useContext, useEffect } from "react";
 
+import { useFormContext } from "react-hook-form";
 import { TaskContext } from "../../../../contexts/TaskContext";
 
 import * as S from "./styles";
@@ -8,6 +9,8 @@ import * as S from "./styles";
 export function CountDown() {
     const { activeTask, amountSecondsPast, markCurrentTaskAsFinished, updateSecondsPast } =
         useContext(TaskContext);
+
+    const { reset } = useFormContext();
 
     const totalSeconds = activeTask ? activeTask.minutesAmount * 60 : 0;
     const currentSeconds = activeTask ? totalSeconds - amountSecondsPast : 0;
@@ -39,6 +42,8 @@ export function CountDown() {
                 if (secondsDifference >= totalSeconds) {
                     markCurrentTaskAsFinished();
 
+                    reset();
+
                     updateSecondsPast(totalSeconds);
 
                     clearInterval(interval);
@@ -51,7 +56,7 @@ export function CountDown() {
         return () => {
             clearInterval(interval);
         };
-    }, [activeTask, totalSeconds, markCurrentTaskAsFinished, updateSecondsPast]);
+    }, [activeTask, totalSeconds, markCurrentTaskAsFinished, updateSecondsPast, reset]);
 
     return (
         <S.CountDownContainer>
