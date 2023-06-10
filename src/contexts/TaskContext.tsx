@@ -1,7 +1,8 @@
-import { ReactNode, createContext, useReducer, useState } from "react";
+import { ReactNode, createContext, useEffect, useReducer, useState } from "react";
 
 import { Task, taskReducer } from "../reducers/tasks/reducer";
 
+import { differenceInSeconds } from "date-fns";
 import {
     addTaskAction,
     interruptTaskAction,
@@ -32,13 +33,31 @@ interface TaskContextProps {
 export const TaskContext = createContext<TaskContextProps>({} as TaskContextProps);
 
 export function TaskContextProvider({ children }: TaskProviderProps) {
-    const [tasksState, dispatch] = useReducer(taskReducer, { tasks: [], activeTaskId: undefined });
+    const [tasksState, dispatch] = useReducer(
+        taskReducer,
+        { tasks: [], activeTaskId: undefined },
+        (initialState) => {
+            const storedJSON = localStorage.getItem("@ignite-timer:tasksState-1.0.0");
 
-    const [amountSecondsPast, setAmountSecondsPast] = useState<number>(0);
+            if (storedJSON) {
+                return JSON.parse(storedJSON);
+            }
+
+            return initialState;
+        }
+    );
 
     const { activeTaskId, tasks } = tasksState;
 
     const activeTask = tasksState.tasks.find((task) => task.id === activeTaskId);
+
+    const [amountSecondsPast, setAmountSecondsPast] = useState<number>(() => {
+        if (activeTask) {
+            return differenceInSeconds(new Date(), new Date(activeTask.startDate));
+        }
+
+        return 0;
+    });
 
     function markCurrentTaskAsFinished() {
         dispatch(markTaskAsFinishedAction());
@@ -75,6 +94,14 @@ export function TaskContextProvider({ children }: TaskProviderProps) {
         createNewTask,
         interruptTask,
     };
+
+    useEffect(() => {
+        localStorage.removeItem("@ignite-timer:tasksState-1.0.0");
+
+        const stateJSON = JSON.stringify(tasksState);
+
+        localStorage.setItem("@ignite-timer:tasksState-1.0.0", stateJSON);
+    }, [tasksState]);
 
     return <TaskContext.Provider value={contextValue}>{children}</TaskContext.Provider>;
 }
