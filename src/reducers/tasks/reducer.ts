@@ -1,3 +1,5 @@
+import { ActionTypes } from "./actions";
+
 export interface Task {
     id: string;
     task: string;
@@ -11,14 +13,6 @@ interface TasksState {
     tasks: Task[];
     activeTaskId: string | undefined;
 }
-
-/* eslint-disable no-unused-vars */
-export enum ActionTypes {
-    ADD_NEW_TASK = "ADD_NEW_TASK",
-    INTERRUPT_TASK = "INTERRUPT_TASK",
-    MARK_CURRENT_TASK_AS_FINISHED = "MARK_CURRENT_TASK_AS_FINISHED",
-}
-/* eslint-enable no-unused-vars */
 
 export function taskReducer(state: TasksState, action: any) {
     switch (action.type) {

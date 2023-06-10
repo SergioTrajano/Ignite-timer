@@ -1,6 +1,12 @@
 import { ReactNode, createContext, useReducer, useState } from "react";
 
-import { ActionTypes, Task, taskReducer } from "../reducers/taskReducer";
+import { Task, taskReducer } from "../reducers/tasks/reducer";
+
+import {
+    addTaskAction,
+    interruptTaskAction,
+    markTaskAsFinishedAction,
+} from "../reducers/tasks/actions";
 
 interface TaskProviderProps {
     children: ReactNode;
@@ -35,10 +41,7 @@ export function TaskContextProvider({ children }: TaskProviderProps) {
     const activeTask = tasksState.tasks.find((task) => task.id === activeTaskId);
 
     function markCurrentTaskAsFinished() {
-        dispatch({
-            type: ActionTypes.MARK_CURRENT_TASK_AS_FINISHED,
-            activeTaskId,
-        });
+        dispatch(markTaskAsFinishedAction());
     }
 
     function updateSecondsPast(newValue: number) {
@@ -53,19 +56,13 @@ export function TaskContextProvider({ children }: TaskProviderProps) {
             startDate: new Date(),
         };
 
-        dispatch({
-            type: ActionTypes.ADD_NEW_TASK,
-            newTask,
-        });
+        dispatch(addTaskAction(newTask));
 
         setAmountSecondsPast(0);
     }
 
     function interruptTask() {
-        dispatch({
-            type: ActionTypes.INTERRUPT_TASK,
-            activeTaskId,
-        });
+        dispatch(interruptTaskAction());
     }
 
     const contextValue = {
