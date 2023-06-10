@@ -1,21 +1,9 @@
 import { ReactNode, createContext, useReducer, useState } from "react";
 
+import { ActionTypes, Task, taskReducer } from "../reducers/taskReducer";
+
 interface TaskProviderProps {
     children: ReactNode;
-}
-
-interface Task {
-    id: string;
-    task: string;
-    minutesAmount: number;
-    startDate: Date;
-    interruptedDate?: Date;
-    finishedDate?: Date;
-}
-
-interface TasksState {
-    tasks: Task[];
-    activeTaskId: string | undefined;
 }
 
 interface NewTaskProps {
@@ -38,45 +26,7 @@ interface TaskContextProps {
 export const TaskContext = createContext<TaskContextProps>({} as TaskContextProps);
 
 export function TaskContextProvider({ children }: TaskProviderProps) {
-    const [tasksState, dispatch] = useReducer(
-        (state: TasksState, action: any) => {
-            switch (action.type) {
-                case "ADD_NEW_TASK":
-                    return {
-                        ...state,
-                        tasks: [...state.tasks, action.newTask],
-                        activeTaskId: action.newTask.id,
-                    };
-                case "INTERRUPT_TASK":
-                    return {
-                        ...state,
-                        tasks: state.tasks.map((task) => {
-                            if (task.id === state.activeTaskId) {
-                                return { ...task, interruptedDate: new Date() };
-                            }
-
-                            return task;
-                        }),
-                        activeTaskId: undefined,
-                    };
-                case "MARK_CURRENT_TASK_AS_FINISHED":
-                    return {
-                        ...state,
-                        tasks: state.tasks.map((task) => {
-                            if (task.id === state.activeTaskId) {
-                                return { ...task, finishedDate: new Date() };
-                            }
-
-                            return task;
-                        }),
-                        activeTaskId: undefined,
-                    };
-                default:
-                    return state;
-            }
-        },
-        { tasks: [], activeTaskId: undefined }
-    );
+    const [tasksState, dispatch] = useReducer(taskReducer, { tasks: [], activeTaskId: undefined });
 
     const [amountSecondsPast, setAmountSecondsPast] = useState<number>(0);
 
@@ -86,7 +36,7 @@ export function TaskContextProvider({ children }: TaskProviderProps) {
 
     function markCurrentTaskAsFinished() {
         dispatch({
-            type: "MARK_CURRENT_TASK_AS_FINISHED",
+            type: ActionTypes.MARK_CURRENT_TASK_AS_FINISHED,
             activeTaskId,
         });
     }
@@ -104,7 +54,7 @@ export function TaskContextProvider({ children }: TaskProviderProps) {
         };
 
         dispatch({
-            type: "ADD_NEW_TASK",
+            type: ActionTypes.ADD_NEW_TASK,
             newTask,
         });
 
@@ -113,7 +63,7 @@ export function TaskContextProvider({ children }: TaskProviderProps) {
 
     function interruptTask() {
         dispatch({
-            type: "INTERRUPT_TASK",
+            type: ActionTypes.INTERRUPT_TASK,
             activeTaskId,
         });
     }
