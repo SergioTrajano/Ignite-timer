@@ -1,16 +1,15 @@
-import { ReactNode, createContext, useState } from "react";
+import { ReactNode, createContext, useReducer, useState } from "react";
+
+import { Task, taskReducer } from "../reducers/tasks/reducer";
+
+import {
+    addTaskAction,
+    interruptTaskAction,
+    markTaskAsFinishedAction,
+} from "../reducers/tasks/actions";
 
 interface TaskProviderProps {
     children: ReactNode;
-}
-
-interface Task {
-    id: string;
-    task: string;
-    minutesAmount: number;
-    startDate: Date;
-    interruptedDate?: Date;
-    finishedDate?: Date;
 }
 
 interface NewTaskProps {
@@ -21,7 +20,7 @@ interface NewTaskProps {
 interface TaskContextProps {
     tasks: Task[];
     activeTask: Task | undefined;
-    activeTaskId: string | null;
+    activeTaskId: string | undefined;
     amountSecondsPast: number;
 
     markCurrentTaskAsFinished: () => void;
@@ -33,22 +32,16 @@ interface TaskContextProps {
 export const TaskContext = createContext<TaskContextProps>({} as TaskContextProps);
 
 export function TaskContextProvider({ children }: TaskProviderProps) {
-    const [tasks, setTasks] = useState<Task[]>([]);
-    const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
+    const [tasksState, dispatch] = useReducer(taskReducer, { tasks: [], activeTaskId: undefined });
+
     const [amountSecondsPast, setAmountSecondsPast] = useState<number>(0);
 
-    const activeTask = tasks.find((task) => task.id === activeTaskId);
+    const { activeTaskId, tasks } = tasksState;
+
+    const activeTask = tasksState.tasks.find((task) => task.id === activeTaskId);
 
     function markCurrentTaskAsFinished() {
-        setTasks((prev) =>
-            prev.map((task) => {
-                if (task.id === activeTaskId) {
-                    return { ...task, finishedDate: new Date() };
-                }
-
-                return task;
-            })
-        );
+        dispatch(markTaskAsFinishedAction());
     }
 
     function updateSecondsPast(newValue: number) {
@@ -63,23 +56,13 @@ export function TaskContextProvider({ children }: TaskProviderProps) {
             startDate: new Date(),
         };
 
-        setTasks((prev) => [...prev, newTask]);
-        setActiveTaskId(newTask.id);
+        dispatch(addTaskAction(newTask));
+
         setAmountSecondsPast(0);
     }
 
     function interruptTask() {
-        setTasks((prev) =>
-            prev.map((task) => {
-                if (activeTask?.id === activeTaskId) {
-                    return { ...task, interruptedDate: new Date() };
-                }
-
-                return task;
-            })
-        );
-
-        setActiveTaskId(null);
+        dispatch(interruptTaskAction());
     }
 
     const contextValue = {
